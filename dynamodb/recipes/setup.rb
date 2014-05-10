@@ -1,4 +1,4 @@
-packages = ['#{node[:dynamodb][:local][:java][:pkg]}', 'wget']
+packages = ["#{node[:dynamodb][:local][:java][:pkg]}"]
 
 packages.each do |pkg|
   package pkg do
@@ -6,21 +6,31 @@ packages.each do |pkg|
   end
 end
 
-bash 'install dynamodb local' do
+directory "#{node[:dynamodb][:local][:dir]}" do
+  owner "root"
+  group "root"
+  mode 0755
+  action :create
+end
+
+remote_file "#{node[:dynamodb][:local][:dir]}/#{node[:dynamodb][:local][:pkg]}" do
+  source "#{node[:dynamodb][:local][:pkg][:url]}"
+end
+
+bash "install dynamodb local" do
+  user "root"
   code <<-EOC
-    cd ~
-    mkdir #{node[:dynamodb][:local][:dir]}
     cd #{node[:dynamodb][:local][:dir]}
-    wget #{node[:dynamodb][:local][:pkg][:url]}
     tar xzf #{node[:dynamodb][:local][:pkg]}
-    rm #{node[:dynamodb][:local][:pkg]}
-    cd ~
   EOC
 end
 
-execute 'start dynamodb local' do
-  command 'cd ~/#{node[:dynamodb][:local][:dir]} &&
-           java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar #{node[:dynamodb][:local][:java_opts]} & &&
-           cd ~'
+file "#{node[:dynamodb][:local][:dir]}/#{node[:dynamodb][:local][:pkg]}" do
+  action :delete
+end
+
+execute "start dynamodb local" do
+  command "cd ~/#{node[:dynamodb][:local][:dir]} &&
+           java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar #{node[:dynamodb][:local][:java_opts]} &"
   action :run
 end
