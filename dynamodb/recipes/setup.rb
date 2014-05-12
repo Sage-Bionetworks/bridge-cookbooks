@@ -2,6 +2,7 @@ packages = ["#{node[:dynamodb][:local][:java][:pkg]}"]
 
 packages.each do |pkg|
   package pkg do
+    arch "x86_64"
     action :install
   end
 end
