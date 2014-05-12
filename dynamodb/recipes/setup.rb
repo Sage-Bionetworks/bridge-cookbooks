@@ -1,12 +1,3 @@
-packages = ["#{node[:dynamodb][:local][:java][:pkg]}"]
-
-packages.each do |pkg|
-  yum_package pkg do
-    arch "x86_64"
-    action :install
-  end
-end
-
 directory "#{node[:dynamodb][:local][:dir]}" do
   owner "root"
   group "root"
