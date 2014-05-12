@@ -14,7 +14,7 @@ directory "#{node[:dynamodb][:local][:dir]}" do
 end
 
 remote_file "#{node[:dynamodb][:local][:dir]}/#{node[:dynamodb][:local][:pkg]}" do
-  source "#{node[:dynamodb][:local][:pkg][:url]}"
+  source "#{node[:dynamodb][:local][:pkg_url]}"
 end
 
 bash "install dynamodb local" do
